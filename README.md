@@ -10,6 +10,11 @@ versiones, comparar y mezclar, exportar (texto, Markdown, Word, PDF) e importar,
 Sin migración: usa los mismos documentos que Atrio y Atrio del PC (`/users/<uid>/escritos`), con el formato de `docs/escribir.md` de Atrio.
 Lo que escribas en el PC aparece aquí al momento, y al revés.
 
+## 0.2.1: Azabache y Marfil se enteran al momento
+
+- Al publicar un capítulo terminado o las palabras del día, Cobalto **sella también `stamps`** (antes solo lo sellaba la apariencia). Azabache y
+  Marfil escuchan ese sello: el Diario y los Escritos se actualizan en cuanto sincronizas, no la próxima vez que se abran.
+
 ## 0.2.0: «Leer en Marfil» y Ajustes en pestañas
 
 - **Leer en Marfil**: en el manuscrito de una obra (y en «Exportar»), si Marfil está en el móvil y la obra tiene capítulos terminados, un enlace

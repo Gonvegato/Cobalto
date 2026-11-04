@@ -24,7 +24,7 @@ Azabache debe enlazar la valoración o la reseña de una obra por ese `id`.
 | Nodo | Contenido | Quién escribe |
 |---|---|---|
 | `dev/<dispositivo>/data` | Lo de ese dispositivo (texto JSON `v:1`): por ahora solo `aj`, la apariencia (gana la más reciente entre tus Cobaltos). | cada Cobalto, solo el suyo |
-| `stamps/<dispositivo>` | Hora de la última subida de ese dispositivo (servidor). | cada Cobalto |
+| `stamps/<dispositivo>` | Hora de la última subida de ese dispositivo (servidor). También se sella cada vez que cambia `lectura` o `palabras` (0.2.1): quien lo escucha (Azabache, Marfil) se entera al momento. | cada Cobalto |
 | `lectura/<obra>/<capítulo>` | Una copia de **solo lectura** del texto de cada capítulo marcado como **terminado** («hecho» en el capítulo o en su parte): `{t, a, c, n, pa, u, p, x}` = título de la obra, autor, título del capítulo, su número en el libro, el título de su parte (si la tiene), hora de la última edición, palabras y `x` el texto (Markdown ligero: `# `, `## `, `> `, `*cursiva*`, `**negrita**`, `***` = salto de escena). Al quitar la marca de terminado, la copia se quita. Es lo que lee Azabache para «Escribir» (solo los capítulos completados). | cualquier Cobalto |
 | `palabras/<dispositivo>` | Las palabras escritas cada día en ese dispositivo (`"AAAA-MM-DD"` → palabras). **Ligero**: es lo que debe leer un Diario. Cada dispositivo escribe solo lo suyo (y lo escrito en Atrio del PC va con el dispositivo del PC de Atrio, no aquí: ver abajo). | cada Cobalto |
 

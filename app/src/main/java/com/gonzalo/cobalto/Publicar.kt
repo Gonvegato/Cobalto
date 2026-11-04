@@ -53,17 +53,14 @@ object Publicar {
     }
 
     /** Publica lo que haya cambiado (bloqueante, con red): llamar fuera del hilo principal. */
-    fun todo(c: Context): Boolean {
-        if (!Cuenta.vinculada) return false
-        val e = Escritos.get(c)
-        val p = prefs(c)
-        val raiz = Cuenta.raiz
-        var cambios = false
+    /** Lo que hay que mandar (un PATCH sobre `/users/<uid>/cobalto/`) y las firmas que quedan después. Sin red: se puede probar. */
+    class Envio(val cuerpo: JSONObject, val firmasLectura: JSONObject, val firmaPalabras: String)
+
+    fun envio(e: Escritos, firmas: JSONObject, firmaPalabrasPrevia: String, dispositivo: String): Envio {
+        val cuerpo = JSONObject()
         // ---- Los capítulos terminados
         val quiero = capitulosTerminados(e)
-        val firmas = runCatching { JSONObject(p.getString("lectura", "{}")!!) }.getOrDefault(JSONObject())
         val nuevas = JSONObject()
-        val cuerpo = JSONObject()
         quiero.forEach { (pid, caps) -> caps.forEach { (cid, doc) ->
             val f = firma(doc.toString())
             nuevas.put("$pid/$cid", f)
@@ -73,12 +70,21 @@ object Publicar {
         // ---- Las palabras de cada día de este dispositivo
         val dias = palabrasPorDia(e)
         val firmaDias = firma(dias.toSortedMap().toString())
-        if (p.getString("palabras", "") != firmaDias) cuerpo.put("palabras/${Cuenta.dispositivo}", JSONObject().also { o -> dias.forEach { (k, v) -> o.put(k, v) } })
-        if (cuerpo.length() > 0) {
-            Cuenta.db("PATCH", raiz, cuerpo.toString(), "print=silent")
-            cambios = true
-        }
-        p.edit().putString("lectura", nuevas.toString()).putString("palabras", firmaDias).apply()
+        if (firmaPalabrasPrevia != firmaDias) cuerpo.put("palabras/$dispositivo", JSONObject().also { o -> dias.forEach { (k, v) -> o.put(k, v) } })
+        // ---- El sello: quien escucha `stamps` (Azabache, Marfil) se entera al momento de que hay algo nuevo
+        if (cuerpo.length() > 0) cuerpo.put("stamps/$dispositivo", JSONObject().put(".sv", "timestamp"))
+        return Envio(cuerpo, nuevas, firmaDias)
+    }
+
+    fun todo(c: Context): Boolean {
+        if (!Cuenta.vinculada) return false
+        val e = Escritos.get(c)
+        val p = prefs(c)
+        val firmas = runCatching { JSONObject(p.getString("lectura", "{}")!!) }.getOrDefault(JSONObject())
+        val env = envio(e, firmas, p.getString("palabras", "") ?: "", Cuenta.dispositivo)
+        val cambios = env.cuerpo.length() > 0
+        if (cambios) Cuenta.db("PATCH", Cuenta.raiz, env.cuerpo.toString(), "print=silent")
+        p.edit().putString("lectura", env.firmasLectura.toString()).putString("palabras", env.firmaPalabras).apply()
         return cambios
     }
 

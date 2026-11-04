@@ -66,4 +66,20 @@ class PublicarTest {
         assertEquals(Publicar.firma("hola"), Publicar.firma("hola"))
         assertNotEquals(Publicar.firma("hola"), Publicar.firma("adiós"))
     }
+
+    @Test fun elEnvioLlevaSoloLoNuevoYSellaStampsCuandoHayAlgo() {
+        val o = e.nuevo(Escritos.T_OBRA, "") { put("titulo", "La ciudad"); put("autor", "Yo") }
+        val c1 = e.nuevo(Escritos.T_CAP, o.id) { put("titulo", "Uno"); put("hecho", 1) }
+        e.nuevo(Escritos.T_ESCENA, o.id) { put("cid", c1.id); put("titulo", "a"); put("texto", "Era de noche.") }
+        val a = Publicar.envio(e, JSONObject(), "", "movil-A")
+        assertTrue(a.cuerpo.has("lectura/${o.id}/${c1.id}")); assertTrue(a.cuerpo.has("palabras/movil-A"))
+        assertEquals("timestamp", a.cuerpo.getJSONObject("stamps/movil-A").getString(".sv"))
+        // Nada cambió: no se manda nada (ni el sello)
+        val b = Publicar.envio(e, a.firmasLectura, a.firmaPalabras, "movil-A")
+        assertEquals(0, b.cuerpo.length())
+        // Se quita la marca de terminado: la copia se borra y se sella
+        e.edita(c1.id) { put("hecho", 0) }
+        val d = Publicar.envio(e, a.firmasLectura, a.firmaPalabras, "movil-A")
+        assertTrue(d.cuerpo.isNull("lectura/${o.id}/${c1.id}")); assertTrue(d.cuerpo.has("stamps/movil-A")); assertFalse(d.firmasLectura.has("${o.id}/${c1.id}"))
+    }
 }
