@@ -41,7 +41,7 @@ fun MarcasCompartir(e: Escritos, d: Doc) {
             parte?.b("hecho") == true && !hecho -> Text("Terminado porque lo está la parte.", color = Muted, fontSize = 12.sp)
             d.t == Escritos.T_PARTE && comp -> Text("$nombre puede leer todos los capítulos de esta parte (también los que añadas) y anotarlos.", color = Muted, fontSize = 12.sp)
             comp -> Text("$nombre puede leerlo en su Atrio y anotarlo.", color = Muted, fontSize = 12.sp)
-            !Pareja.hay(ctx) -> Text("Para compartirlo, enlaza tu cuenta con la de tu pareja (Ajustes → Cuenta y pareja).", color = Muted, fontSize = 12.sp)
+            !Pareja.hay(ctx) -> Text("Para compartirlo, enlaza tu cuenta con la de tu pareja (Ajustes → Cuenta).", color = Muted, fontSize = 12.sp)
         }
     }
 }

@@ -145,6 +145,9 @@ fun ManuscritoObra(e: Escritos, obra: Doc, ver: Int, abrirParte: (String) -> Uni
                 BotonEscribir("Nueva parte") { parteNueva = true }
                 BotonEscribir("Nuevo capítulo", suave = true) { capNuevo = true }
             }
+            val ctx = androidx.compose.ui.platform.LocalContext.current
+            val terminados = remember(ver, pid) { Hermanas.capitulosTerminados(e, pid) }
+            if (terminados > 0 && Hermanas.hayMarfil(ctx)) EnlaceRevista("Leer en Marfil ($terminados ${if (terminados == 1) "capítulo terminado" else "capítulos terminados"})", acento = true) { Hermanas.leerEnMarfil(ctx) }
         }
     }
     if (lista) ManuscritoLista(e, obra, ver, abrir, abrirCapitulo, hacerGuia, verGuia, cabecera = conmuta)

@@ -243,6 +243,12 @@ fun ExportarDialogo(e: Escritos, obra: Doc, onCerrar: () -> Unit) {
     }
     HojaEscribir("Exportar «${obra.s("titulo")}»", onCerrar) {
         Text("Se hace en tu móvil: el texto no se envía a ningún sitio. Lo guardas donde quieras o lo mandas con otra app.", color = Muted, fontSize = 13.sp)
+        val terminados = remember(obra.id) { Hermanas.capitulosTerminados(e, obra.id) }
+        if (Hermanas.hayMarfil(ctx)) {
+            EtiquetaEscribir("En Marfil")
+            if (terminados > 0) EnlaceRevista("Leer en Marfil ($terminados ${if (terminados == 1) "capítulo terminado" else "capítulos terminados"})", acento = true) { Hermanas.leerEnMarfil(ctx) }
+            Text(if (terminados > 0) "Los capítulos que has dado por terminados se leen en Marfil con su lector, sin exportar nada (llegan por tu cuenta)." else "Cuando des un capítulo por terminado, se podrá leer en Marfil con su lector (llega por tu cuenta).", color = Muted, fontSize = 12.sp, lineHeight = 17.sp)
+        }
         EtiquetaEscribir("Formato")
         Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) { formatos.forEach { (k, n) -> SoftChip(n, formato == k) { formato = k } } }
         if (conEstilo) {

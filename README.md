@@ -10,6 +10,13 @@ versiones, comparar y mezclar, exportar (texto, Markdown, Word, PDF) e importar,
 Sin migración: usa los mismos documentos que Atrio y Atrio del PC (`/users/<uid>/escritos`), con el formato de `docs/escribir.md` de Atrio.
 Lo que escribas en el PC aparece aquí al momento, y al revés.
 
+## 0.2.0: «Leer en Marfil» y Ajustes en pestañas
+
+- **Leer en Marfil**: en el manuscrito de una obra (y en «Exportar»), si Marfil está en el móvil y la obra tiene capítulos terminados, un enlace
+  abre Marfil en sus «Escritos», donde esa obra se lee con el lector (Marfil 0.12.0 o más nueva). No se exporta nada: los capítulos llegan por tu cuenta.
+- **Ajustes** en pestañas, como Atrio: Apariencia · Escritura (papelera, y qué llega a Marfil y a Azabache) · Cuenta (Atrio y pareja) ·
+  Avanzado (kDrive y actualizaciones, copias).
+
 ## 0.1.0: la primera
 
 - **Portada de revista**, con las mismas medidas que las de Atrio, Marfil y Carmesí: la cabecera, el número del día y la fecha, las barras de
@@ -40,7 +47,7 @@ Generadas en el ordenador con obras de ejemplo (`CapturasTest`, `-Proborazzi.tes
 [portada abajo](docs/capturas/1b_portada_abajo.png) · [en oscuro](docs/capturas/2_portada_oscuro.png) · [Escribiendo](docs/capturas/3_escribiendo.png) ·
 [En pausa](docs/capturas/3b_en_pausa.png) · [Archivo](docs/capturas/3c_archivo.png) · [manuscrito](docs/capturas/4_obra_manuscrito.png) ·
 [fichas](docs/capturas/4b_obra_fichas.png) · [notas](docs/capturas/4c_obra_notas.png) · [editor](docs/capturas/4d_editor.png) ·
-[ajustes](docs/capturas/5_ajustes.png) · [vacía](docs/capturas/6_portada_vacia.png). Los widgets, en `docs/widgets/`.
+[ajustes](docs/capturas/5_ajustes.png) · [ajustes: escritura](docs/capturas/5b_ajustes_escritura.png) · [ajustes: cuenta](docs/capturas/5c_ajustes_cuenta.png) · [ajustes: avanzado](docs/capturas/5d_ajustes_avanzado.png) · [vacía](docs/capturas/6_portada_vacia.png). Los widgets, en `docs/widgets/`.
 
 ## Cómo se trabaja
 

@@ -83,7 +83,9 @@ class CapturasTest {
         org.junit.Assume.assumeTrue(System.getProperty("roborazzi.test.record") == "true")
         siembra(); montar(false)
         rule.onNodeWithContentDescription("Ajustes").performClick(); foto("5_ajustes")
-        rule.onNodeWithText("Cuenta de Atrio".uppercase(), useUnmergedTree = true).performScrollTo(); foto("5b_ajustes_cuenta")
+        rule.onNodeWithText("ESCRITURA").performClick(); rule.waitForIdle(); foto("5b_ajustes_escritura")
+        rule.onNodeWithText("CUENTA").performClick(); rule.waitForIdle(); foto("5c_ajustes_cuenta")
+        rule.onNodeWithText("AVANZADO").performClick(); rule.waitForIdle(); foto("5d_ajustes_avanzado")
     }
 
     @Test fun vacia() {

@@ -14,6 +14,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
@@ -30,7 +31,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-const val VERSION = "0.1.0"
+const val VERSION = "0.2.0"
 
 /** «Ajustes»: Apariencia (como la de Atrio), cuenta de Atrio y pareja, actualizaciones, escritura y copias. */
 @OptIn(ExperimentalLayoutApi::class)
@@ -43,50 +44,54 @@ fun PantEstilo(alVolver: () -> Unit) {
     val exportar = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { u ->
         if (u != null) mensaje = runCatching { ctx.contentResolver.openOutputStream(u)!!.use { it.write(e.volcado().toString().toByteArray()) }; "Copia guardada" }.getOrElse { "No se pudo guardar la copia" }
     }
+    var pestana by rememberSaveable { mutableIntStateOf(0) }
     Column(Modifier.fillMaxSize().background(Paper).verticalScroll(rememberScrollState()).statusBarsPadding().navigationBarsPadding().padding(horizontal = 20.dp)) {
         RevistaTopBar(alVolver, "Cobalto")
         Antetitulo("Sección", Modifier.padding(top = 10.dp), color = Acento, conCuadro = false)
         FitTitle("Ajustes", 52.sp, 56.sp, letterSpacing = (-1.5).sp, modifier = Modifier.padding(top = 2.dp), unaLinea = true)
         Filete(3.dp)
+        PestanasRevista(listOf("Apariencia", "Escritura", "Cuenta", "Avanzado"), pestana) { pestana = it }
         Spacer(Modifier.height(14.dp))
 
-        SeccionApariencia()
-
-        Spacer(Modifier.height(14.dp))
-        Filete(2.dp)
-        Spacer(Modifier.height(12.dp))
-        Antetitulo("Cuenta de Atrio", Modifier.padding(bottom = 4.dp))
-        SeccionCuenta()
-
-        Spacer(Modifier.height(14.dp))
-        Filete(2.dp)
-        Spacer(Modifier.height(12.dp))
-        Antetitulo("Actualizaciones", Modifier.padding(bottom = 4.dp))
-        SeccionActualizaciones()
-
-        Spacer(Modifier.height(14.dp))
-        Filete(2.dp)
-        Spacer(Modifier.height(12.dp))
-        Antetitulo("Escritura", Modifier.padding(bottom = 4.dp))
-        val enPapelera = remember(e.version) { e.papelera().size }
-        MagLink("Papelera" + if (enPapelera > 0) " · $enPapelera" else "", "Lo borrado se guarda 30 días, también lo borrado desde el PC") { papelera = true }
-        Filete(1.dp, Line)
-        Text("Cobalto escribe en los mismos documentos que Escribir de Atrio y de Atrio del PC: tus obras salen aquí tal cual, y lo que cambies aquí llega allí.",
-            color = Muted, fontFamily = Body, fontSize = 12.sp, lineHeight = 17.sp, modifier = Modifier.padding(top = 6.dp))
-
-        Spacer(Modifier.height(14.dp))
-        Filete(2.dp)
-        Spacer(Modifier.height(12.dp))
-        Antetitulo("Copias", Modifier.padding(bottom = 4.dp))
-        MagLink("Guardar copia de mis obras", "Un archivo con todo lo escrito (obras, capítulos, escenas, fichas, notas…), también la papelera") { exportar.launch("cobalto-obras.json") }
-        Text("Cada obra se puede exportar aparte (texto, Markdown, Word o PDF) desde «Exportar», dentro de la obra.", color = Muted, fontFamily = Body, fontSize = 12.sp, lineHeight = 17.sp, modifier = Modifier.padding(top = 6.dp))
-        mensaje?.let { Text(it, color = Acento, fontFamily = Display, fontStyle = FontStyle.Italic, fontSize = 15.sp, modifier = Modifier.padding(top = 4.dp)) }
+        when (pestana) {
+            0 -> SeccionApariencia()
+            1 -> {
+                Antetitulo("Escritura", Modifier.padding(bottom = 4.dp))
+                val enPapelera = remember(e.version) { e.papelera().size }
+                MagLink("Papelera" + if (enPapelera > 0) " · $enPapelera" else "", "Lo borrado se guarda 30 días, también lo borrado desde el PC") { papelera = true }
+                Filete(1.dp, Line)
+                Text("Cobalto escribe en los mismos documentos que Escribir de Atrio y de Atrio del PC: tus obras salen aquí tal cual, y lo que cambies aquí llega allí.",
+                    color = Muted, fontFamily = Body, fontSize = 12.sp, lineHeight = 17.sp, modifier = Modifier.padding(top = 6.dp))
+                Spacer(Modifier.height(14.dp))
+                Filete(2.dp)
+                Spacer(Modifier.height(12.dp))
+                Antetitulo("Hermanas", Modifier.padding(bottom = 4.dp))
+                Text(if (Hermanas.hayMarfil(ctx)) "Marfil está en este móvil: los capítulos que das por terminados se leen allí con su lector («Leer en Marfil», en el manuscrito y en Exportar). Azabache enseña en su Diario las palabras de cada día."
+                    else "Los capítulos que das por terminados se publican en tu cuenta: Marfil los lee con su lector y Azabache enseña en su Diario las palabras de cada día. Marfil no está en este móvil.",
+                    color = Muted, fontFamily = Body, fontSize = 12.sp, lineHeight = 17.sp, modifier = Modifier.padding(top = 6.dp))
+            }
+            2 -> {
+                Antetitulo("Cuenta de Atrio", Modifier.padding(bottom = 4.dp))
+                SeccionCuenta()
+            }
+            else -> {
+                Antetitulo("kDrive y actualizaciones", Modifier.padding(bottom = 4.dp))
+                SeccionActualizaciones()
+                Spacer(Modifier.height(14.dp))
+                Filete(2.dp)
+                Spacer(Modifier.height(12.dp))
+                Antetitulo("Copias", Modifier.padding(bottom = 4.dp))
+                MagLink("Guardar copia de mis obras", "Un archivo con todo lo escrito (obras, capítulos, escenas, fichas, notas…), también la papelera") { exportar.launch("cobalto-obras.json") }
+                Text("Cada obra se puede exportar aparte (texto, Markdown, Word, libro o PDF) desde «Exportar», dentro de la obra.", color = Muted, fontFamily = Body, fontSize = 12.sp, lineHeight = 17.sp, modifier = Modifier.padding(top = 6.dp))
+                mensaje?.let { Text(it, color = Acento, fontFamily = Display, fontStyle = FontStyle.Italic, fontSize = 15.sp, modifier = Modifier.padding(top = 4.dp)) }
+            }
+        }
 
         Spacer(Modifier.height(26.dp))
         Filete(3.dp)
         Spacer(Modifier.height(10.dp))
         Etiqueta("Cobalto $VERSION")
-        Text("Cobalto es hermana de Atrio, Marfil y Carmesí. El tesauro de sinónimos es el de RLA-ES (LGPL 2.1).", color = Muted, fontFamily = Display, fontStyle = FontStyle.Italic, fontSize = 13.sp, lineHeight = 18.sp)
+        Text("Cobalto es hermana de Azabache, Marfil y Hiedra. El tesauro de sinónimos es el de RLA-ES (LGPL 2.1).", color = Muted, fontFamily = Display, fontStyle = FontStyle.Italic, fontSize = 13.sp, lineHeight = 18.sp)
         Spacer(Modifier.height(30.dp))
     }
     if (papelera) PapeleraEscribir(e, onCerrar = { papelera = false })
