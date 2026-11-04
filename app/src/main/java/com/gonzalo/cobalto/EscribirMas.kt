@@ -246,7 +246,7 @@ fun ExportarDialogo(e: Escritos, obra: Doc, onCerrar: () -> Unit) {
         val terminados = remember(obra.id) { Hermanas.capitulosTerminados(e, obra.id) }
         if (Hermanas.hayMarfil(ctx)) {
             EtiquetaEscribir("En Marfil")
-            if (terminados > 0) EnlaceRevista("Leer en Marfil ($terminados ${if (terminados == 1) "capítulo terminado" else "capítulos terminados"})", acento = true) { Hermanas.leerEnMarfil(ctx) }
+            if (terminados > 0) EnlaceRevista("Leer en Marfil ($terminados ${if (terminados == 1) "capítulo terminado" else "capítulos terminados"})", acento = true) { Hermanas.leerEnMarfil(ctx, obra.id) }
             Text(if (terminados > 0) "Los capítulos que has dado por terminados se leen en Marfil con su lector, sin exportar nada (llegan por tu cuenta)." else "Cuando des un capítulo por terminado, se podrá leer en Marfil con su lector (llega por tu cuenta).", color = Muted, fontSize = 12.sp, lineHeight = 17.sp)
         }
         EtiquetaEscribir("Formato")

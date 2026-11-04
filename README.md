@@ -10,6 +10,10 @@ versiones, comparar y mezclar, exportar (texto, Markdown, Word, PDF) e importar,
 Sin migración: usa los mismos documentos que Atrio y Atrio del PC (`/users/<uid>/escritos`), con el formato de `docs/escribir.md` de Atrio.
 Lo que escribas en el PC aparece aquí al momento, y al revés.
 
+## 0.2.2
+
+- «Leer en Marfil» abre Marfil **leyendo esa obra** (Marfil 0.12.3 o más nueva), no solo la lista de Escritos.
+
 ## 0.2.1: Azabache y Marfil se enteran al momento
 
 - Al publicar un capítulo terminado o las palabras del día, Cobalto **sella también `stamps`** (antes solo lo sellaba la apariencia). Azabache y
