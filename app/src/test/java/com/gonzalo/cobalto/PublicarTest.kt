@@ -102,4 +102,18 @@ class PublicarTest {
         assertTrue(d.cuerpo.has("lectura/${o.id}/${c1.id}")); assertFalse(d.diferido)
         assertEquals("Era de noche y llovía.", d.cuerpo.getJSONObject("lectura/${o.id}/${c1.id}").getString("x"))
     }
+
+    @Test fun lasPalabrasDelDiaTambienEsperanAEstarQuietas() {
+        val o = e.nuevo(Escritos.T_OBRA, "") { put("titulo", "A") }
+        e.registra(o.id, 70)
+        val t0 = e.todos().filter { it.t == Escritos.T_LOG }.maxOf { it.u }
+        val a = Publicar.envio(e, JSONObject(), "", "A", ahora = t0 + 1_000)
+        assertTrue("la primera vez va", a.cuerpo.has("palabras/A")); assertFalse(a.diferido)
+        e.registra(o.id, 30)
+        val t1 = e.todos().filter { it.t == Escritos.T_LOG }.maxOf { it.u }
+        val b = Publicar.envio(e, a.firmasLectura, a.firmaPalabras, "A", ahora = t1 + 1_000)
+        assertFalse("acabas de escribir: todavía no", b.cuerpo.has("palabras/A")); assertTrue(b.diferido); assertEquals(a.firmaPalabras, b.firmaPalabras)
+        val d = Publicar.envio(e, b.firmasLectura, b.firmaPalabras, "A", ahora = t1 + Publicar.QUIETO + 1)
+        assertEquals(100, d.cuerpo.getJSONObject("palabras/A").getInt(Publicar.fecha(Escritos.hoy()))); assertFalse(d.diferido)
+    }
 }

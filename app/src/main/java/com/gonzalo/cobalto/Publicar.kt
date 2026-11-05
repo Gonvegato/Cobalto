@@ -76,10 +76,14 @@ object Publicar {
             nuevas.put("$pid/$cid", f); cuerpo.put("lectura/$pid/$cid", doc)
         } }
         for (k in firmas.keys()) if (!nuevas.has(k)) cuerpo.put("lectura/$k", JSONObject.NULL)
-        // ---- Las palabras de cada día de este dispositivo
+        // ---- Las palabras de cada día de este dispositivo (mientras escribes cambian a cada frase: se mandan cuando llevas un rato quieto)
         val dias = palabrasPorDia(e)
-        val firmaDias = firma(dias.toSortedMap().toString())
-        if (firmaPalabrasPrevia != firmaDias) cuerpo.put("palabras/$dispositivo", JSONObject().also { o -> dias.forEach { (k, v) -> o.put(k, v) } })
+        var firmaDias = firma(dias.toSortedMap().toString())
+        if (firmaPalabrasPrevia != firmaDias) {
+            val ultimoLog = e.todos().filter { it.t == Escritos.T_LOG }.maxOfOrNull { it.u } ?: 0L
+            if (firmaPalabrasPrevia.isNotBlank() && ahora - ultimoLog < QUIETO) { firmaDias = firmaPalabrasPrevia; diferido = true }
+            else cuerpo.put("palabras/$dispositivo", JSONObject().also { o -> dias.forEach { (k, v) -> o.put(k, v) } })
+        }
         // ---- El sello: quien escucha `stamps` (Azabache, Marfil) se entera al momento de que hay algo nuevo
         if (cuerpo.length() > 0) cuerpo.put("stamps/$dispositivo", JSONObject().put(".sv", "timestamp"))
         return Envio(cuerpo, nuevas, firmaDias, diferido)
