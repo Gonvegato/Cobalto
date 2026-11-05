@@ -92,7 +92,7 @@ class EscribirExportTest {
         val est = String(z["word/styles.xml"]!!)
         assertTrue("Times New Roman 12 a doble espacio", est.contains("Times New Roman") && est.contains("w:sz w:val=\"24\"") && est.contains("w:line=\"480\""))
         assertEquals("unas 85.000 palabras", EscribirExport.recuento(84_700))
-        assertEquals("unas 3000 palabras", EscribirExport.recuento(3_200))
+        assertEquals("unas 3.000 palabras", EscribirExport.recuento(3_200))
         assertEquals("812 palabras", EscribirExport.recuento(812))
         val dir = System.getProperty("escribir.salida")?.let { File(it) }
         dir?.let { it.mkdirs(); File(it, "movil-manuscrito.docx").writeBytes(b) }

@@ -147,7 +147,7 @@ object EscribirExport {
     fun recuento(n: Int): String {
         if (n < 1000) return "$n palabras"
         val r = Math.round(n / 1000.0) * 1000
-        return "unas " + (if (r < 10_000) r.toString() else java.text.NumberFormat.getIntegerInstance(java.util.Locale("es", "ES")).format(r)) + " palabras"
+        return "unas " + Formato.cifra(r) + " palabras"
     }
 
     /**

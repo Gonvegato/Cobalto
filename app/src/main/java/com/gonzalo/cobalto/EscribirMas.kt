@@ -160,7 +160,7 @@ fun CifrasObra(e: Escritos, obra: Doc, ver: Int) {
                 val falta = (meta - total).coerceAtLeast(0)
                 Text("$pct % · " + if (falta == 0) "meta alcanzada" else "faltan ${cifraE(falta)} palabras" + if (ritmo >= 1) {
                     val diasQ = Math.ceil(falta / ritmo).toLong()
-                    " · a tu ritmo de los últimos 14 días (${cifraE(ritmo.toInt())} al día), el " + java.text.SimpleDateFormat("d 'de' MMMM 'de' yyyy", Locale("es")).format(java.util.Date(System.currentTimeMillis() + diasQ * 86_400_000L))
+                    " · a tu ritmo de los últimos 14 días (${cifraE(ritmo.toInt())} al día), el " + Formato.fecha(System.currentTimeMillis() + diasQ * 86_400_000L)
                 } else "", color = Muted, fontSize = 13.sp, lineHeight = 19.sp)
             }
         }

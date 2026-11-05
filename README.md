@@ -10,6 +10,16 @@ versiones, comparar y mezclar, exportar (texto, Markdown, Word, PDF) e importar,
 Sin migración: usa los mismos documentos que Atrio y Atrio del PC (`/users/<uid>/escritos`), con el formato de `docs/escribir.md` de Atrio.
 Lo que escribas en el PC aparece aquí al momento, y al revés.
 
+## 0.2.16
+
+- **Fechas y cifras como en las otras tres** (`Formato.kt`, con las mismas pruebas en las cuatro): «16 oct 2026» en fichas y textos, «16/10/2026» en las tablas de datos y siempre con punto de millar («4.010»). Los meses van escritos en la app (Android, según la versión, les ponía punto: «oct.»).
+- **«Seguir escribiendo» es un botón grande** en «Ahora», como «Seguir leyendo» en Marfil y «Jugar» en Hiedra (el sprint, al lado, en pequeño).
+- En las listas (Escribiendo…), cada obra enseña **las palabras de hoy** en el acento («412 HOY») y, debajo, lo que lleva de su meta. Antes solo el «0 %».
+- Los contadores de las pestañas van en tinta (más oscura la de la pestaña elegida), no en rojo: el rojo queda para lo que se toca.
+- En las listas, la línea de debajo del título un punto más grande y más legible.
+- **La cabecera de la portada se pliega al bajar**: arriba solo se quedan el nombre y «Buscar · + Nueva»; el número, la fecha, las barras y el menú se van con la página.
+- Debajo de «Cobalto · hecho en casa», en gris, la versión instalada.
+
 ## 0.2.15
 
 - **Cambiar qué obra sigue un widget sin quitarlo**: déjalo pulsado en el escritorio y sale «Reconfigurar» (Android 12 o más, en los

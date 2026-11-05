@@ -76,7 +76,7 @@ class CapturasTest {
     @Test fun editor() {
         org.junit.Assume.assumeTrue(System.getProperty("roborazzi.test.record") == "true")
         siembra(); montar(false)
-        rule.onNodeWithText("SEGUIR ESCRIBIENDO →").performClick(); foto("4d_editor")
+        rule.onNodeWithText("SEGUIR ESCRIBIENDO").performClick(); foto("4d_editor")
     }
 
     @Test fun ajustes() {

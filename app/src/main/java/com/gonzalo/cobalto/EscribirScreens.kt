@@ -49,7 +49,7 @@ import java.text.NumberFormat
 import java.util.Locale
 
 private val ES = Locale("es", "ES")
-fun cifraE(n: Int): String = NumberFormat.getIntegerInstance(ES).format(n)
+fun cifraE(n: Int): String = Formato.cifra(n)
 
 /** «hace 2 h», «ayer», «el 3 de mayo»… */
 fun haceE(t: Long): String {
@@ -60,7 +60,7 @@ fun haceE(t: Long): String {
         d < 86_400_000 -> "hace ${d / 3_600_000} h"
         d < 2 * 86_400_000 -> "ayer"
         d < 30L * 86_400_000 -> "hace ${d / 86_400_000} días"
-        else -> java.text.SimpleDateFormat("d 'de' MMM", ES).format(java.util.Date(t))
+        else -> Formato.fechaSinAno(java.time.Instant.ofEpochMilli(t).atZone(java.time.ZoneId.systemDefault()).toLocalDate())
     }
 }
 

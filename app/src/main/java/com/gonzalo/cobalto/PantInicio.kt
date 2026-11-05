@@ -1,5 +1,6 @@
 package com.gonzalo.cobalto
 
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -47,7 +48,10 @@ fun PantInicio(alAbrir: (String) -> Unit, alSeguir: (String, String?) -> Unit, a
         "Terminadas" to { alIr(Destino.Terminadas) }, "Archivo" to { alIr(Destino.Archivo) }
     )
 
-    Column(Modifier.fillMaxSize().background(Paper).verticalScroll(rememberScrollState()).statusBarsPadding().padding(horizontal = 28.dp)) {
+    val desplazado = rememberScrollState()
+    val umbral = with(androidx.compose.ui.platform.LocalDensity.current) { 300.dp.toPx() }
+    Box(Modifier.fillMaxSize()) {
+    Column(Modifier.fillMaxSize().background(Paper).verticalScroll(desplazado).statusBarsPadding().padding(horizontal = 28.dp)) {
         Row(Modifier.fillMaxWidth().padding(top = 10.dp), verticalAlignment = Alignment.CenterVertically) {
             EnlaceRevista("Buscar") { alBuscar() }
             EnlaceRevista("+ Nueva", Modifier.padding(start = 14.dp), acento = true) { alNueva() }
@@ -118,9 +122,9 @@ fun PantInicio(alAbrir: (String) -> Unit, alSeguir: (String, String?) -> Unit, a
                     if (linea.isNotEmpty()) Text("…" + linea.takeLast(140), color = Muted, fontFamily = Display, fontStyle = FontStyle.Italic, fontSize = 15.sp, lineHeight = 20.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 }
                 Spacer(Modifier.height(10.dp))
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(18.dp)) {
-                    Text("SEGUIR ESCRIBIENDO →", color = Acento, fontFamily = Body, fontSize = 12.sp, fontWeight = FontWeight.Black, letterSpacing = 1.4.sp,
-                        modifier = Modifier.clickable { alSeguir(ahora.id, escena?.id) }.padding(vertical = 8.dp))
+                // La acción de siempre, como en Marfil y Hiedra: un botón grande; el sprint, al lado, en pequeño
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                    AccionGrande(androidx.compose.material.icons.Icons.Rounded.Edit, "Seguir escribiendo", Modifier.weight(1f)) { alSeguir(ahora.id, escena?.id) }
                     Text("SPRINT →", color = Charcoal, fontFamily = Body, fontSize = 12.sp, fontWeight = FontWeight.Black, letterSpacing = 1.4.sp,
                         modifier = Modifier.clickable { alSprint(ahora.id) }.padding(vertical = 8.dp))
                 }
@@ -150,7 +154,14 @@ fun PantInicio(alAbrir: (String) -> Unit, alSeguir: (String, String?) -> Unit, a
         }
 
         Text("Cobalto · hecho en casa", color = Muted, fontFamily = Display, fontStyle = FontStyle.Italic, fontSize = 12.sp, modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 18.dp))
+
+        // La versión instalada, debajo (para no tener que entrar en Ajustes a mirarla)
+
+        Text("versión $VERSION", color = Muted.copy(alpha = 0.7f), fontFamily = Body, fontSize = 10.sp, letterSpacing = 0.6.sp, modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 2.dp))
         Spacer(Modifier.height(24.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()))
+    }
+    // Al bajar, la cabecera se pliega: arriba solo quedan el nombre y lo de siempre (Buscar · + Nueva…)
+    BarraPlegada("Cobalto", desplazado.value > umbral) { EnlaceRevista("Buscar") { alBuscar() }; EnlaceRevista("+ Nueva", Modifier.padding(start = 14.dp), acento = true) { alNueva() } }
     }
 }
 

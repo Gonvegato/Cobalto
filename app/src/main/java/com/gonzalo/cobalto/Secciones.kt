@@ -57,9 +57,14 @@ fun FilaObra(e: Escritos, o: Doc, alAbrir: (String) -> Unit, modifier: Modifier 
         Column(Modifier.weight(1f).padding(horizontal = 14.dp)) {
             Text(o.s("titulo").ifBlank { "Sin título" }, color = Charcoal, fontFamily = Display, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, lineHeight = 22.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
             val sub = listOfNotNull(o.s("autor").ifBlank { null }, o.s("genero").ifBlank { null }, if (conEstado) estadoDe(o).nombre else null, "editada ${haceE(e.ultimaEdicion(o.id))}").joinToString(" · ")
-            Text(sub.uppercase(), color = Muted, fontFamily = Body, fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp, maxLines = 2, modifier = Modifier.padding(top = 2.dp))
+            Text(sub.uppercase(), color = Muted, fontFamily = Body, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.8.sp, maxLines = 2, lineHeight = 15.sp, modifier = Modifier.padding(top = 3.dp))
         }
-        Text(if (meta > 0) "${(palabras * 100L / meta).coerceAtMost(999)} %" else cifraE(palabras), color = Acento, fontFamily = Body, fontWeight = FontWeight.Black, fontSize = 12.sp, letterSpacing = 0.6.sp, maxLines = 1)
+        // A la derecha: lo de hoy en esta obra (lo que se mira al abrir) y, debajo, lo que lleva de su meta
+        val hoy = remember(e.version, o.id) { e.escritas(Escritos.hoy(), o.id) }
+        Column(horizontalAlignment = Alignment.End) {
+            if (hoy > 0) Text("${cifraE(hoy)} HOY", color = Acento, fontFamily = Body, fontWeight = FontWeight.Black, fontSize = 12.sp, letterSpacing = 0.6.sp, maxLines = 1)
+            Text(if (meta > 0) "${(palabras * 100L / meta).coerceAtMost(999)} %" else cifraE(palabras), color = if (hoy > 0) Muted else Acento, fontFamily = Body, fontWeight = FontWeight.Black, fontSize = if (hoy > 0) 10.sp else 12.sp, letterSpacing = 0.6.sp, maxLines = 1)
+        }
     }
     Filete(1.dp, Line)
 }
