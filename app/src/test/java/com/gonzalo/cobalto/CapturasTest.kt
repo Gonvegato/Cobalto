@@ -61,7 +61,7 @@ class CapturasTest {
         siembra(); montar(false)
         rule.onNodeWithText("ESCRIBIENDO").performClick(); foto("3_escribiendo")
         rule.onAllNodesWithText("EN PAUSA")[0].performClick(); rule.waitForIdle(); foto("3b_en_pausa")
-        rule.onAllNodesWithText("ARCHIVO")[0].performClick(); rule.waitForIdle(); foto("3c_archivo")
+        rule.onAllNodesWithText("ARCHIVO")[0].performScrollTo().performClick(); rule.waitForIdle(); foto("3c_archivo")
     }
 
     @Test fun estudio() {
@@ -69,8 +69,8 @@ class CapturasTest {
         siembra(); montar(false)
         rule.onNodeWithText("ESCRIBIENDO").performClick(); rule.waitForIdle()
         rule.onAllNodesWithText("La ciudad de cristal", useUnmergedTree = true)[0].performClick(); foto("4_obra_manuscrito")
-        rule.onAllNodesWithText("FICHAS")[0].performClick(); rule.waitForIdle(); foto("4b_obra_fichas")
-        rule.onAllNodesWithText("NOTAS")[0].performClick(); rule.waitForIdle(); foto("4c_obra_notas")
+        rule.onAllNodesWithText("FICHAS")[0].performScrollTo().performClick(); rule.waitForIdle(); foto("4b_obra_fichas")
+        rule.onAllNodesWithText("NOTAS")[0].performScrollTo().performClick(); rule.waitForIdle(); foto("4c_obra_notas")
     }
 
     @Test fun editor() {

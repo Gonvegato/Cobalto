@@ -10,6 +10,12 @@ versiones, comparar y mezclar, exportar (texto, Markdown, Word, PDF) e importar,
 Sin migración: usa los mismos documentos que Atrio y Atrio del PC (`/users/<uid>/escritos`), con el formato de `docs/escribir.md` de Atrio.
 Lo que escribas en el PC aparece aquí al momento, y al revés.
 
+## 0.2.11
+
+- Las pestañas (secciones, Ajustes) se desplazan solas solo cuando la elegida no se ve entera, y entonces la centran: antes se
+  pegaba al borde izquierdo y la de al lado salía cortada.
+  Y en los bordes, un degradado cuando hay más pestañas por ese lado.
+
 ## 0.2.10
 
 - Lo último que escribes antes de dejar Cobalto llega a tu cuenta (y a Marfil y Azabache) aunque Android congele la app nada más salir:
