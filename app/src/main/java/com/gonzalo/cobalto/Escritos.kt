@@ -495,14 +495,8 @@ class Escritos(private val dir: File, private val dev: () -> String = { "local" 
     /** Palabras de cada día de los últimos [dias] (el último es hoy). */
     fun ultimosDias(dias: Int, pid: String? = null): List<Pair<Long, Int>> = (hoy() - dias + 1..hoy()).map { it to escritas(it, pid) }
 
-    /** Días seguidos escribiendo (si hoy aún no, cuenta desde ayer). */
-    fun racha(pid: String? = null): Int {
-        var d = hoy()
-        if (escritas(d, pid) == 0) d--
-        var n = 0
-        while (escritas(d, pid) > 0) { n++; d-- }
-        return n
-    }
+    /** Días seguidos escribiendo, con la regla común de la familia ([Racha]: al menos una palabra; si hoy aún no, desde ayer). */
+    fun racha(pid: String? = null): Int = Racha.dias(hoy()) { Racha.cuentaPalabras(escritas(it, pid)) }
 
     /** Días distintos en los que has escrito algo en la obra. */
     fun diasEscritos(pid: String): Int = docs.values.filter { it.t == T_LOG && !it.borrado && it.pid == pid && total(it) > 0 }.map { it.n("dia") }.toSet().size
