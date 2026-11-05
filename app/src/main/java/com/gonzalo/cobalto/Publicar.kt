@@ -53,18 +53,27 @@ object Publicar {
     }
 
     /** Publica lo que haya cambiado (bloqueante, con red): llamar fuera del hilo principal. */
-    /** Lo que hay que mandar (un PATCH sobre `/users/<uid>/cobalto/`) y las firmas que quedan después. Sin red: se puede probar. */
-    class Envio(val cuerpo: JSONObject, val firmasLectura: JSONObject, val firmaPalabras: String)
+    /** Un capítulo terminado que se sigue tocando no se publica hasta que lleva este rato quieto (si no, cada frase sería un PATCH y un sello). */
+    const val QUIETO = 20_000L
 
-    fun envio(e: Escritos, firmas: JSONObject, firmaPalabrasPrevia: String, dispositivo: String): Envio {
+    /**
+     * Lo que hay que mandar (un PATCH sobre `/users/<uid>/cobalto/`) y las firmas que quedan después. [diferido]: hay un capítulo cambiado
+     * que aún no lleva [QUIETO] quieto; se manda en la siguiente. Sin red: se puede probar.
+     */
+    class Envio(val cuerpo: JSONObject, val firmasLectura: JSONObject, val firmaPalabras: String, val diferido: Boolean = false)
+
+    fun envio(e: Escritos, firmas: JSONObject, firmaPalabrasPrevia: String, dispositivo: String, ahora: Long = System.currentTimeMillis()): Envio {
         val cuerpo = JSONObject()
+        var diferido = false
         // ---- Los capítulos terminados
         val quiero = capitulosTerminados(e)
         val nuevas = JSONObject()
         quiero.forEach { (pid, caps) -> caps.forEach { (cid, doc) ->
             val f = firma(doc.toString())
-            nuevas.put("$pid/$cid", f)
-            if (firmas.optString("$pid/$cid") != f) cuerpo.put("lectura/$pid/$cid", doc)
+            val previa = firmas.optString("$pid/$cid")
+            if (previa == f) { nuevas.put("$pid/$cid", f); return@forEach }
+            if (previa.isNotBlank() && ahora - doc.optLong("u") < QUIETO) { nuevas.put("$pid/$cid", previa); diferido = true; return@forEach }
+            nuevas.put("$pid/$cid", f); cuerpo.put("lectura/$pid/$cid", doc)
         } }
         for (k in firmas.keys()) if (!nuevas.has(k)) cuerpo.put("lectura/$k", JSONObject.NULL)
         // ---- Las palabras de cada día de este dispositivo
@@ -73,19 +82,19 @@ object Publicar {
         if (firmaPalabrasPrevia != firmaDias) cuerpo.put("palabras/$dispositivo", JSONObject().also { o -> dias.forEach { (k, v) -> o.put(k, v) } })
         // ---- El sello: quien escucha `stamps` (Azabache, Marfil) se entera al momento de que hay algo nuevo
         if (cuerpo.length() > 0) cuerpo.put("stamps/$dispositivo", JSONObject().put(".sv", "timestamp"))
-        return Envio(cuerpo, nuevas, firmaDias)
+        return Envio(cuerpo, nuevas, firmaDias, diferido)
     }
 
+    /** Publica lo que haya cambiado. Devuelve si quedó algo diferido (un capítulo aún en marcha: volver a llamar en un rato). Bloqueante (red). */
     fun todo(c: Context): Boolean {
         if (!Cuenta.vinculada) return false
         val e = Escritos.get(c)
         val p = prefs(c)
         val firmas = runCatching { JSONObject(p.getString("lectura", "{}")!!) }.getOrDefault(JSONObject())
         val env = envio(e, firmas, p.getString("palabras", "") ?: "", Cuenta.dispositivo)
-        val cambios = env.cuerpo.length() > 0
-        if (cambios) Cuenta.db("PATCH", Cuenta.raiz, env.cuerpo.toString(), "print=silent")
+        if (env.cuerpo.length() > 0) Cuenta.db("PATCH", Cuenta.raiz, env.cuerpo.toString(), "print=silent")
         p.edit().putString("lectura", env.firmasLectura.toString()).putString("palabras", env.firmaPalabras).apply()
-        return cambios
+        return env.diferido
     }
 
     /** Al salir de la cuenta: se olvida lo publicado (en la siguiente cuenta se publica todo). */

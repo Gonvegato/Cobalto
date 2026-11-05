@@ -82,4 +82,24 @@ class PublicarTest {
         val d = Publicar.envio(e, a.firmasLectura, a.firmaPalabras, "movil-A")
         assertTrue(d.cuerpo.isNull("lectura/${o.id}/${c1.id}")); assertTrue(d.cuerpo.has("stamps/movil-A")); assertFalse(d.firmasLectura.has("${o.id}/${c1.id}"))
     }
+
+    @Test fun unCapituloTerminadoQueSeSigueTocandoEsperaAEstarQuieto() {
+        val o = e.nuevo(Escritos.T_OBRA, "") { put("titulo", "La ciudad") }
+        val c1 = e.nuevo(Escritos.T_CAP, o.id) { put("titulo", "Uno"); put("hecho", 1) }
+        val esc = e.nuevo(Escritos.T_ESCENA, o.id) { put("cid", c1.id); put("titulo", "a"); put("texto", "Era de noche.") }
+        val t0 = e.get(esc.id)!!.u
+        // La primera vez se publica aunque sea reciente (nunca estuvo)
+        val a = Publicar.envio(e, JSONObject(), "", "A", ahora = t0 + 1_000)
+        assertTrue(a.cuerpo.has("lectura/${o.id}/${c1.id}")); assertFalse(a.diferido)
+        // Se cambia el texto hace 1 s: no se manda todavía, se queda la firma anterior y se avisa de que hay algo diferido
+        e.edita(esc.id) { put("texto", "Era de noche y llovía.") }
+        val t1 = e.get(esc.id)!!.u
+        val b = Publicar.envio(e, a.firmasLectura, a.firmaPalabras, "A", ahora = t1 + 1_000)
+        assertFalse(b.cuerpo.has("lectura/${o.id}/${c1.id}")); assertTrue(b.diferido)
+        assertEquals(a.firmasLectura.getString("${o.id}/${c1.id}"), b.firmasLectura.getString("${o.id}/${c1.id}"))
+        // Pasado el rato quieto, se manda
+        val d = Publicar.envio(e, b.firmasLectura, b.firmaPalabras, "A", ahora = t1 + Publicar.QUIETO + 1)
+        assertTrue(d.cuerpo.has("lectura/${o.id}/${c1.id}")); assertFalse(d.diferido)
+        assertEquals("Era de noche y llovía.", d.cuerpo.getJSONObject("lectura/${o.id}/${c1.id}").getString("x"))
+    }
 }

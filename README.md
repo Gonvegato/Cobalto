@@ -10,10 +10,11 @@ versiones, comparar y mezclar, exportar (texto, Markdown, Word, PDF) e importar,
 Sin migración: usa los mismos documentos que Atrio y Atrio del PC (`/users/<uid>/escritos`), con el formato de `docs/escribir.md` de Atrio.
 Lo que escribas en el PC aparece aquí al momento, y al revés.
 
-## 0.2.5: lo terminado llega a Marfil y Azabache sin esperar
+## 0.2.5 y 0.2.6: lo terminado llega a Marfil y Azabache sin esperar
 
 - Al dar un capítulo por terminado (o al escribir), la sincronización normal también publica los capítulos terminados y las palabras del día.
-  Antes solo lo hacía el trabajo de fondo o «Sincronizar ahora», así que Marfil y Azabache podían tardar horas en verlo.
+  Antes solo lo hacía el trabajo de fondo o «Sincronizar ahora», así que Marfil y Azabache podían tardar horas en verlo. Un capítulo terminado
+  que sigues tocando se publica cuando lleva 20 segundos quieto (no a cada frase).
 
 ## 0.2.4
 

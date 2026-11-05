@@ -130,9 +130,9 @@ class Escritos(private val dir: File, private val dev: () -> String = { "local" 
                 e.sincroniza()
                 fallos = 0
                 // Y lo que leen las hermanas (los capítulos terminados y las palabras del día), sin esperar al trabajo de fondo ni a «Sincronizar ahora»
-                runCatching { kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) { Publicar.todo(c) } }
+                val diferido = runCatching { kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) { Publicar.todo(c) } }.getOrDefault(false)
                 if (System.currentTimeMillis() - ordenada > 6 * 3_600_000L) { ordenada = System.currentTimeMillis(); e.purga(); runCatching { e.limpia() } }
-                if (e.pendientes().isNotEmpty()) pronto(c)
+                if (e.pendientes().isNotEmpty()) pronto(c) else if (diferido) pronto(c, Publicar.QUIETO)
                 true
             } catch (ex: Exception) {
                 fallos++
