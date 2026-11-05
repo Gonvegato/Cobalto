@@ -10,6 +10,11 @@ versiones, comparar y mezclar, exportar (texto, Markdown, Word, PDF) e importar,
 Sin migración: usa los mismos documentos que Atrio y Atrio del PC (`/users/<uid>/escritos`), con el formato de `docs/escribir.md` de Atrio.
 Lo que escribas en el PC aparece aquí al momento, y al revés.
 
+## 0.2.9
+
+- Textos al día: lo que seguía diciendo «Atrio» para hablar del móvil (seguir sus colores en directo, copiar su apariencia de tu cuenta,
+  «los mismos que en Atrio») dice ahora Azabache, que es quien está en el móvil. La cuenta sigue siendo la cuenta de Atrio.
+
 ## 0.2.8
 
 - **Arreglo**: en Android 13 o más, los avisos del actualizador («Cobalto tiene una versión nueva», «Cobalto se ha actualizado, toca para abrirla»)
