@@ -10,6 +10,12 @@ versiones, comparar y mezclar, exportar (texto, Markdown, Word, PDF) e importar,
 Sin migración: usa los mismos documentos que Atrio y Atrio del PC (`/users/<uid>/escritos`), con el formato de `docs/escribir.md` de Atrio.
 Lo que escribas en el PC aparece aquí al momento, y al revés.
 
+## 0.2.10
+
+- Lo último que escribes antes de dejar Cobalto llega a tu cuenta (y a Marfil y Azabache) aunque Android congele la app nada más salir:
+  al salir se programa un trabajo de fondo que sube lo pendiente y publica el capítulo que quedó esperando los 20 segundos de calma. Si la
+  app ya lo había subido, el trabajo no hace nada.
+
 ## 0.2.9
 
 - Textos al día: lo que seguía diciendo «Atrio» para hablar del móvil (seguir sus colores en directo, copiar su apariencia de tu cuenta,

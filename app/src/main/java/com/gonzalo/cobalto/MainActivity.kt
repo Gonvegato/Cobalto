@@ -60,5 +60,8 @@ class MainActivity : ComponentActivity() {
         // Lo escrito, a disco (y los widgets, al día)
         runCatching { Escritos.get(applicationContext).vacia() }
         Widgets.pedir(applicationContext)
+        // Android congela la app al poco de dejar de verse: lo que quede por subir (y el capítulo diferido por los 20 s de calma) lo sube
+        // un trabajo de fondo, que corre aunque la app esté congelada. Si la app ya lo subió antes, el trabajo no encuentra nada que hacer.
+        if (Cuenta.vinculada) NubeTarea.encolar(applicationContext, Publicar.QUIETO + 5_000L)
     }
 }

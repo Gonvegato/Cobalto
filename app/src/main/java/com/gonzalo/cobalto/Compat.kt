@@ -116,9 +116,10 @@ fun BigHeader(title: String, overline: String? = null, modifier: Modifier = Modi
 
 /** Con la app cerrada o sin red: una tarea que sube lo pendiente de Escribir en cuanto haya conexión (el CloudSave de Atrio). */
 object NubeTarea {
-    fun encolar(ctx: android.content.Context) = runCatching {
+    fun encolar(ctx: android.content.Context, retraso: Long = 0L) = runCatching {
         val req = androidx.work.OneTimeWorkRequestBuilder<NubeWorker>()
             .setConstraints(androidx.work.Constraints.Builder().setRequiredNetworkType(androidx.work.NetworkType.CONNECTED).build())
+            .setInitialDelay(retraso, java.util.concurrent.TimeUnit.MILLISECONDS)
             .build()
         androidx.work.WorkManager.getInstance(ctx.applicationContext).enqueueUniqueWork("nube", androidx.work.ExistingWorkPolicy.REPLACE, req)
     }
@@ -130,7 +131,8 @@ class NubeWorker(ctx: android.content.Context, p: androidx.work.WorkerParameters
         Cuenta.cargar(c)
         if (!Cuenta.vinculada) return Result.success()
         val ok = Escritos.sincroniza(c)
-        if (ok) runCatching { Publicar.todo(c) }
-        return if (!ok && runAttemptCount < 5) Result.retry() else Result.success()
+        // Un capítulo que se tocó hace menos de 20 s queda diferido: se vuelve a intentar en un rato (aquí, no en la app, que puede estar congelada)
+        val diferido = if (ok) runCatching { Publicar.todo(c) }.getOrDefault(false) else false
+        return if ((!ok || diferido) && runAttemptCount < 5) Result.retry() else Result.success()
     }
 }
