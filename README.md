@@ -10,6 +10,10 @@ versiones, comparar y mezclar, exportar (texto, Markdown, Word, PDF) e importar,
 Sin migración: usa los mismos documentos que Atrio y Atrio del PC (`/users/<uid>/escritos`), con el formato de `docs/escribir.md` de Atrio.
 Lo que escribas en el PC aparece aquí al momento, y al revés.
 
+## 0.2.4
+
+- En el manuscrito, «+ Nuevo capítulo» y «+ Nueva parte» son enlaces de la revista (como «+ Añadir» en Hiedra y Marfil), no botones.
+
 ## 0.2.3: la portada como la de sus hermanas
 
 - Arriba, «Buscar» y «+ Nueva» como en Hiedra y Marfil (antes solo «+ Nueva obra»); «Buscar» abre las secciones con el buscador abierto.

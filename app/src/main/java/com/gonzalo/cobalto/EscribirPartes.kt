@@ -141,9 +141,9 @@ fun ManuscritoObra(e: Escritos, obra: Doc, ver: Int, abrirParte: (String) -> Uni
                 FiltroRevista("Cuadrados", !lista) { lista = false }
                 FiltroRevista("Lista", lista) { lista = true }
             }
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                BotonEscribir("Nueva parte") { parteNueva = true }
-                BotonEscribir("Nuevo capítulo", suave = true) { capNuevo = true }
+            Row(horizontalArrangement = Arrangement.spacedBy(18.dp)) {
+                EnlaceRevista("+ Nuevo capítulo", acento = true) { capNuevo = true }
+                EnlaceRevista("+ Nueva parte") { parteNueva = true }
             }
             val ctx = androidx.compose.ui.platform.LocalContext.current
             val terminados = remember(ver, pid) { Hermanas.capitulosTerminados(e, pid) }
