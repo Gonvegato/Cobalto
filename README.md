@@ -71,7 +71,8 @@ Generadas en el ordenador con obras de ejemplo (`CapturasTest`, `-Proborazzi.tes
 
 ## Cómo se trabaja
 
-- Pruebas: `gradle :app:testDebugUnitTest` (0 fallos). Con `-Proborazzi.test.record=true` se graban las capturas (`app/build/outputs/roborazzi/`)
+- Pruebas: `gradle :app:testDebugUnitTest` (0 fallos). `ContratoTest` deja en `app/build/outputs/contrato/cobalto.json` lo que Cobalto publica
+  tal cual; se copia a `azabache/herramientas/casos/hermanas/` y la prueba `ContratoHermanasTest` de Azabache comprueba que lo lee entero. Con `-Proborazzi.test.record=true` se graban las capturas (`app/build/outputs/roborazzi/`)
   y los widgets (`app/build/outputs/widgets/`, de donde salen las vistas previas `w_prev_*.png`).
 - Los casos compartidos con el PC (`herramientas/casos/*.json`: mezcla, estructura, tipografía, sinónimos) son copia de los de Atrio y los pasan
   `EscribirMezclaTest`, `EscribirEstructuraTest` y `EscribirCasosTest`.
