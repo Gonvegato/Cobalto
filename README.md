@@ -10,6 +10,12 @@ versiones, comparar y mezclar, exportar (texto, Markdown, Word, PDF) e importar,
 Sin migración: usa los mismos documentos que Atrio y Atrio del PC (`/users/<uid>/escritos`), con el formato de `docs/escribir.md` de Atrio.
 Lo que escribas en el PC aparece aquí al momento, y al revés.
 
+## 0.2.15
+
+- **Cambiar qué obra sigue un widget sin quitarlo**: déjalo pulsado en el escritorio y sale «Reconfigurar» (Android 12 o más, en los
+  lanzadores que lo ofrecen, como el de Pixel): abre la misma lista que al ponerlo (el widget de la obra). El menú del dedo pulsado es del escritorio,
+  no de la app: lo único que una app puede hacer es decir que su widget se puede reconfigurar, y eso es lo que se ha hecho.
+
 ## 0.2.14
 
 - Los «días seguidos escribiendo» siguen la misma regla en Hiedra, Marfil, Cobalto y Azabache (`Racha.kt`, con las mismas pruebas en las cuatro, y en el contrato): cuenta un día con al menos una palabra; si hoy aún no, desde ayer. Para ti no cambia nada (era la misma).

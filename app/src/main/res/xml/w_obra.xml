@@ -9,4 +9,5 @@
     android:previewImage="@drawable/w_prev_obra"
     android:description="@string/w_obra_d"
     android:widgetCategory="home_screen"
+    android:widgetFeatures="reconfigurable"
     android:configure="com.gonzalo.cobalto.ConfigWidgetActivity" />
