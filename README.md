@@ -10,6 +10,14 @@ versiones, comparar y mezclar, exportar (texto, Markdown, Word, PDF) e importar,
 Sin migración: usa los mismos documentos que Atrio y Atrio del PC (`/users/<uid>/escritos`), con el formato de `docs/escribir.md` de Atrio.
 Lo que escribas en el PC aparece aquí al momento, y al revés.
 
+## 0.2.8
+
+- **Arreglo**: en Android 13 o más, los avisos del actualizador («Cobalto tiene una versión nueva», «Cobalto se ha actualizado, toca para abrirla»)
+  no se veían nunca: faltaba el permiso de avisos. Ahora se declara y se concede desde Ajustes → Avanzado («Avisos de actualización»).
+- **Arreglo**: en Android 11 o más, «Leer en Marfil» no salía nunca y Ajustes decía «Marfil no está en este móvil» aunque estuviera (Cobalto no
+  declaraba que puede ver a Marfil). Ahora el manifiesto declara a Hiedra y Marfil, y un test lo vigila.
+- Los widgets (palabras de hoy, obra en curso, cita) se repintan en cuanto llega algo escrito en el PC o en otro móvil, no al cerrar la app.
+
 ## 0.2.5 a 0.2.7: lo terminado llega a Marfil y Azabache sin esperar
 
 - Al dar un capítulo por terminado (o al escribir), la sincronización normal también publica los capítulos terminados y las palabras del día.

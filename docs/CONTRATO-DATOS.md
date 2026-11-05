@@ -41,3 +41,9 @@ En Cobalto no se valora. Azabache es la dueña de la valoración y de la reseña
 ## Lo que aún no está (se añadirá cuando Azabache lo pida)
 
 - Las copias de seguridad completas en el móvil (el PC las tiene en `escritos-copias`): por ahora, «Guardar copia de mis obras» en Ajustes.
+
+## Verse entre hermanas
+
+- **Verse entre hermanas**: desde Android 11 una app no ve a otra (`getLaunchIntentForPackage` da null) si no la declara en `<queries>` de su
+  manifiesto. Cada hermana declara a las demás (`com.gonzalo.hiedra`, `com.gonzalo.marfil`, `com.gonzalo.cobalto`, `com.gonzalo.gamerate`);
+  un test (`ManifiestoHermanasTest`) lo vigila. Sin esto, «Jugar en Hiedra», «Leer en Marfil» y «Escribir en Cobalto» no salen nunca en un móvil.

@@ -127,7 +127,8 @@ class Escritos(private val dir: File, private val dev: () -> String = { "local" 
             if (!Cuenta.vinculada) return true
             val e = get(c)
             return try {
-                e.sincroniza()
+                // Lo que llega de otro dispositivo (el PC, tu pareja) también se ve en los widgets al momento
+                if (e.sincroniza()) Widgets.pedir(c)
                 fallos = 0
                 // Y lo que leen las hermanas (los capítulos terminados y las palabras del día), sin esperar al trabajo de fondo ni a «Sincronizar ahora»
                 val diferido = runCatching { kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) { Publicar.todo(c) } }.getOrDefault(false)
@@ -587,15 +588,16 @@ class Escritos(private val dir: File, private val dev: () -> String = { "local" 
     /** Documentos con cambios que aún no están en la nube (su hora no es la última que se vio allí). */
     fun pendientes(): List<Doc> = docs.values.filter { (acked[it.id] ?: -1L) != it.u }
 
-    /** Sube lo pendiente y baja lo nuevo. Una a la vez. Lanza un error si no hay conexión. */
-    suspend fun sincroniza() = mutex.withLock {
+    /** Sube lo pendiente y baja lo nuevo. Una a la vez. Lanza un error si no hay conexión. Devuelve si ha llegado algo de fuera. */
+    suspend fun sincroniza(): Boolean = mutex.withLock {
         withContext(Dispatchers.IO) {
-            if (!Cuenta.vinculada) return@withContext
-            bajaYa()
+            if (!Cuenta.vinculada) return@withContext false
+            val llego = bajaYa()
             subeYa()
             error = ""
             ultima = System.currentTimeMillis()
             avisa()
+            llego
         }
     }
 
@@ -626,7 +628,8 @@ class Escritos(private val dir: File, private val dev: () -> String = { "local" 
         }
     }
 
-    private fun bajaYa() {
+    /** Baja lo que cambió en otros dispositivos. Devuelve si algo de lo que se ve aquí ha cambiado. */
+    private fun bajaYa(): Boolean {
         val txt = Cuenta.db("GET", base() + "/escritosIdx", null) ?: "{}"
         val idx = JSONObject(txt)
         val faltan = ArrayList<String>()
@@ -636,13 +639,14 @@ class Escritos(private val dir: File, private val dev: () -> String = { "local" 
             if (acked[id] == ru) return@forEach
             faltan += id
         }
-        if (faltan.isEmpty()) { guardaIndice(); return }
+        if (faltan.isEmpty()) { guardaIndice(); return false }
         val remotos: JSONObject = if (faltan.size > 15) JSONObject(Cuenta.db("GET", base() + "/escritos", null) ?: "{}")
             else JSONObject().also { r -> faltan.forEach { id -> Cuenta.db("GET", base() + "/escritos/$id", null)?.let { r.put(id, JSONObject(it)) } } }
         var cambio = false
         faltan.forEach { id -> remotos.optJSONObject(id)?.let { if (aplica(id, it)) cambio = true } }
         guardaIndice()
         if (cambio) avisa()
+        return cambio
     }
 
     /**
