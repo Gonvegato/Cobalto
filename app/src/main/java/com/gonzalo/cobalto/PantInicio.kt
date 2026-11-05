@@ -33,7 +33,7 @@ import java.util.Locale
  */
 @OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun PantInicio(alAbrir: (String) -> Unit, alSeguir: (String, String?) -> Unit, alSprint: (String) -> Unit, alNueva: () -> Unit, alIr: (Destino) -> Unit, alPareja: () -> Unit) {
+fun PantInicio(alAbrir: (String) -> Unit, alSeguir: (String, String?) -> Unit, alSprint: (String) -> Unit, alNueva: () -> Unit, alIr: (Destino) -> Unit, alPareja: () -> Unit, alBuscar: () -> Unit = { alIr(Destino.Escribiendo) }) {
     val ctx = LocalContext.current
     val e = remember { Escritos.get(ctx) }
     val ver = e.version
@@ -49,7 +49,8 @@ fun PantInicio(alAbrir: (String) -> Unit, alSeguir: (String, String?) -> Unit, a
 
     Column(Modifier.fillMaxSize().background(Paper).verticalScroll(rememberScrollState()).statusBarsPadding().padding(horizontal = 28.dp)) {
         Row(Modifier.fillMaxWidth().padding(top = 10.dp), verticalAlignment = Alignment.CenterVertically) {
-            EnlaceRevista("+ Nueva obra", acento = true) { alNueva() }
+            EnlaceRevista("Buscar") { alBuscar() }
+            EnlaceRevista("+ Nueva", Modifier.padding(start = 14.dp), acento = true) { alNueva() }
             Spacer(Modifier.weight(1f))
             Icon(Icons.Filled.Settings, "Ajustes", tint = Charcoal, modifier = Modifier.padding(start = 6.dp).combinedClickable(onClick = { alIr(Destino.Ajustes) }).padding(8.dp).size(22.dp))
         }
@@ -154,14 +155,17 @@ fun PantInicio(alAbrir: (String) -> Unit, alSeguir: (String, String?) -> Unit, a
 }
 
 /**
- * Entre la fecha y el menú, como en las portadas de Atrio y Marfil: lo escrito hoy (y tu objetivo, si tienes), los días seguidos y las
- * dos últimas semanas en barras (cada día, sus palabras; la raya fina es tu objetivo).
+ * Entre la fecha y el menú, como en las portadas de Azabache y Marfil: lo escrito hoy (y tu objetivo, si tienes), los días seguidos y la
+ * semana en barras (cada día, sus palabras; en el acento, los días que cumpliste el objetivo).
  */
 @Composable
 fun BarrasEscritura(e: Escritos, ver: Int) {
-    val r = remember(ver) { e.resumen(14) }
+    // La semana, como en las portadas de Azabache y Marfil: una barra por día (en el acento si cumpliste el objetivo) y su inicial debajo
+    val r = remember(ver) { e.resumen(7) }
     val algo = r.dias.any { it > 0 }
     if (!algo && r.diaria <= 0 && r.racha < 2) return
+    val hoy = java.time.LocalDate.now()
+    val semana = r.dias.takeLast(7).let { d -> d.indices.map { i -> hoy.minusDays((d.size - 1 - i).toLong()) to d[i] } }
     Column(Modifier.fillMaxWidth().padding(top = 14.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(Modifier.size(8.dp).background(Acento)); Spacer(Modifier.width(8.dp))
@@ -169,17 +173,31 @@ fun BarrasEscritura(e: Escritos, ver: Int) {
                 listOfNotNull(
                     "ESCRITURA",
                     when {
-                        r.diaria > 0 && r.hoy >= r.diaria -> "OBJETIVO CUMPLIDO · ${cifraE(r.hoy)} PALABRAS HOY"
-                        r.diaria > 0 -> "${cifraE(r.hoy)} DE ${cifraE(r.diaria)} PALABRAS HOY"
+                        r.diaria > 0 && r.hoy >= r.diaria -> "OBJETIVO CUMPLIDO · ${cifraE(r.hoy)} HOY"
+                        r.diaria > 0 -> "${cifraE(r.hoy)} DE ${cifraE(r.diaria)} HOY"
                         r.hoy > 0 -> "${cifraE(r.hoy)} PALABRAS HOY"
                         else -> null
                     },
                     if (r.racha >= 2) "${r.racha} DÍAS SEGUIDOS" else null
                 ).joinToString(" · "),
                 fontFamily = Body, fontSize = 11.sp, fontWeight = FontWeight.Black, letterSpacing = 1.4.sp,
-                color = if (r.diaria > 0 && r.hoy >= r.diaria) Acento else Charcoal, maxLines = 2
+                color = if (r.diaria > 0 && r.hoy >= r.diaria) Acento else Charcoal, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
             )
         }
-        if (algo) Barras(r.dias, Modifier.fillMaxWidth().padding(top = 10.dp).height(34.dp), meta = r.diaria)
+        if (algo) {
+            val tope = maxOf(semana.maxOf { it.second }, r.diaria, 1).toFloat()
+            Row(Modifier.fillMaxWidth().padding(top = 10.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                semana.forEach { (d, n) ->
+                    Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Box(Modifier.fillMaxWidth(0.62f).height(30.dp), contentAlignment = Alignment.BottomCenter) {
+                            Box(Modifier.fillMaxWidth().height(if (n > 0) maxOf(3f, 30f * n / tope).dp else 1.dp)
+                                .background(if (n > 0) (if (r.diaria > 0 && n >= r.diaria) Acento else Charcoal) else Line))
+                        }
+                        Text(d.dayOfWeek.getDisplayName(java.time.format.TextStyle.NARROW, Locale("es", "ES")).uppercase(), fontFamily = Body, fontSize = 9.sp, fontWeight = FontWeight.Bold,
+                            color = if (d == hoy) Acento else Muted, modifier = Modifier.padding(top = 4.dp))
+                    }
+                }
+            }
+        }
     }
 }

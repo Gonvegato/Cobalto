@@ -58,6 +58,7 @@ fun CobaltoApp(pedida: Peticion? = null, alAbrirPedido: () -> Unit = {}) {
     LaunchedEffect(pedida) { if (pedida != null) { abrir(pedida.obra, pedida.escena, pedida.sprint); alAbrirPedido() } }
     // Una obra borrada desde dentro: se vuelve a donde estabas
     LaunchedEffect(EscribirHub.obraBorrada) { if (EscribirHub.obraBorrada.isNotEmpty() && EscribirHub.obraBorrada == obraId) obraId = null }
+    var buscar by rememberSaveable { mutableStateOf(false) }
     fun ir(x: Destino) { destino = x.ordinal }
 
     AvisoActualizacion()
@@ -66,9 +67,9 @@ fun CobaltoApp(pedida: Peticion? = null, alAbrirPedido: () -> Unit = {}) {
 
     Box(Modifier.fillMaxSize().background(Paper)) {
         when (d) {
-            Destino.Portada -> PantInicio(alAbrir = { abrir(it) }, alSeguir = { o, s -> abrir(o, s) }, alSprint = { abrir(it, sprint = true) }, alNueva = { nueva = true }, alIr = { ir(it) }, alPareja = { pareja = true })
+            Destino.Portada -> PantInicio(alAbrir = { abrir(it) }, alSeguir = { o, s -> abrir(o, s) }, alSprint = { abrir(it, sprint = true) }, alNueva = { nueva = true }, alIr = { ir(it) }, alPareja = { pareja = true }, alBuscar = { buscar = true; ir(Destino.Escribiendo) })
             Destino.Ajustes -> PantEstilo(alVolver = { destino = 0 })
-            else -> PantSecciones(d, alVolver = { destino = 0 }, alAbrir = { abrir(it) }, alNueva = { nueva = true })
+            else -> PantSecciones(d, alVolver = { destino = 0; buscar = false }, alAbrir = { abrir(it) }, alNueva = { nueva = true }, buscando = buscar)
         }
         AnimatedVisibility(pareja, enter = slideInVertically { it / 8 } + fadeIn(), exit = slideOutVertically { it / 8 } + fadeOut()) {
             Box(Modifier.fillMaxSize().background(Paper)) { LecturaPareja(onBack = { pareja = false }) }

@@ -118,14 +118,14 @@ private fun Resultados(busca: String, e: Escritos, ver: Int, alAbrir: (String) -
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PantSecciones(inicial: Destino, alVolver: () -> Unit, alAbrir: (String) -> Unit, alNueva: () -> Unit) {
+fun PantSecciones(inicial: Destino, alVolver: () -> Unit, alAbrir: (String) -> Unit, alNueva: () -> Unit, buscando: Boolean = false) {
     val ctx = LocalContext.current
     val e = remember { Escritos.get(ctx) }
     val ver = e.version
     val paginas = listOf(Destino.Escribiendo, Destino.EnPausa, Destino.Terminadas, Destino.Archivo)
     val pager = rememberPagerState(initialPage = paginas.indexOf(inicial).coerceAtLeast(0)) { paginas.size }
     val ambito = rememberCoroutineScope()
-    var buscando by rememberSaveable { mutableStateOf(false) }
+    var buscando by rememberSaveable { mutableStateOf(buscando) }
     var busca by rememberSaveable { mutableStateOf("") }
     var aviso by remember { mutableStateOf("") }
     val cuentas = remember(ver) { paginas.map { d -> e.obrasDe(d.estado()!!).size } }

@@ -10,6 +10,13 @@ versiones, comparar y mezclar, exportar (texto, Markdown, Word, PDF) e importar,
 Sin migración: usa los mismos documentos que Atrio y Atrio del PC (`/users/<uid>/escritos`), con el formato de `docs/escribir.md` de Atrio.
 Lo que escribas en el PC aparece aquí al momento, y al revés.
 
+## 0.2.3: la portada como la de sus hermanas
+
+- Arriba, «Buscar» y «+ Nueva» como en Hiedra y Marfil (antes solo «+ Nueva obra»); «Buscar» abre las secciones con el buscador abierto.
+- Las barras de escritura son las de Marfil y Azabache: la semana, una barra por día con su inicial (en el acento, los días que cumpliste
+  el objetivo), y la línea de arriba en una sola línea.
+- Los textos de la guía y del árbol que decían «Atrio» dicen Cobalto; lo de la pareja, «en su Cobalto (o en Atrio)».
+
 ## 0.2.2
 
 - «Leer en Marfil» abre Marfil **leyendo esa obra** (Marfil 0.12.3 o más nueva), no solo la lista de Escritos.
