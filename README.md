@@ -10,6 +10,11 @@ versiones, comparar y mezclar, exportar (texto, Markdown, Word, PDF) e importar,
 Sin migración: usa los mismos documentos que Atrio y Atrio del PC (`/users/<uid>/escritos`), con el formato de `docs/escribir.md` de Atrio.
 Lo que escribas en el PC aparece aquí al momento, y al revés.
 
+## 0.2.13
+
+- En las filas de datos (etiqueta · puntos · cifra), si no cabe todo en una línea, la etiqueta va entera arriba y la cifra debajo, en vez
+  de cortar la etiqueta con puntos suspensivos (como en Azabache 1.2.8).
+
 ## 0.2.12
 
 - La fila de orden y filtros (Recientes · Nombre · …) lleva el mismo degradado en los bordes que las pestañas.
